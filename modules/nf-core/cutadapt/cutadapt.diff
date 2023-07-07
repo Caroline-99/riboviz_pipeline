@@ -1,0 +1,65 @@
+Changes in module 'nf-core/cutadapt'
+--- modules/nf-core/cutadapt/main.nf
++++ modules/nf-core/cutadapt/main.nf
+@@ -1,5 +1,5 @@
+ process CUTADAPT {
+-    tag "$meta.id"
++    tag "${sample_id}"
+     label 'process_medium'
+ 
+     conda "bioconda::cutadapt=3.4"
+@@ -8,26 +8,26 @@
+         'biocontainers/cutadapt:3.4--py39h38f01e4_1' }"
+ 
+     input:
+-    tuple val(meta), path(reads)
++    tuple val(sample_id), path(sample_fq)
+ 
+     output:
+-    tuple val(meta), path('*.trim.fastq.gz'), emit: reads
+-    tuple val(meta), path('*.log')          , emit: log
+-    path "versions.yml"                     , emit: versions
++    tuple val(sample_id), path('*.fq'), emit: reads
++    tuple val(sample_id), path('*_cutadapt.log'), emit: log
++    path "versions.yml", emit: versions
+ 
+     when:
+-    task.ext.when == null || task.ext.when
++    params.is_multiplexed == null || !params.is_multiplexed
+ 
+     script:
+     def args = task.ext.args ?: ''
+-    def prefix = task.ext.prefix ?: "${meta.id}"
+-    def trimmed  = meta.single_end ? "-o ${prefix}.trim.fastq.gz" : "-o ${prefix}_1.trim.fastq.gz -p ${prefix}_2.trim.fastq.gz"
++    def prefix = task.ext.prefix ?: "${sample_id}"
++    def single_end = task.ext.single_end ?: false
++    def trimmed = single_end ? "-o ${prefix}_trim.fq" : "-o ${prefix}_1.trim.fq -p ${prefix}_2.trim.fq"
+     """
+     cutadapt \\
+-        --cores $task.cpus \\
+-        $args \\
++        --cores $task.cpus --trim-n -O 1 -m 5 -a ${params.adapters} \\
+         $trimmed \\
+-        $reads \\
++        ${sample_fq} \\
+         > ${prefix}.cutadapt.log
+     cat <<-END_VERSIONS > versions.yml
+     "${task.process}":
+@@ -36,11 +36,11 @@
+     """
+ 
+     stub:
+-    def prefix  = task.ext.prefix ?: "${meta.id}"
+-    def trimmed = meta.single_end ? "${prefix}.trim.fastq.gz" : "${prefix}_1.trim.fastq.gz ${prefix}_2.trim.fastq.gz"
++    def prefix  = task.ext.prefix ?: "${sample_id}"
++    def trimmed = single_end ? "-o ${prefix}_trim.fq" : "-o ${prefix}_1.trim.fq -p ${prefix}_2.trim.fq"
+     """
+-    touch ${prefix}.cutadapt.log
+-    touch ${trimmed}
++    touch ${prefix}_trim.fq
++    touch ${prefix}_cutadapt.log
+ 
+     cat <<-END_VERSIONS > versions.yml
+     "${task.process}":
+
+************************************************************

@@ -1,0 +1,7 @@
+dir_in: vignette/input
+dir_out: vignette/output
+dataset: vignette
+fq_files: {WTnone: SRR1042855_s1mi.fastq.gz, WT3AT: SRR1042864_s1mi.fastq.gz, NotHere: example_missing_file.fastq.gz}
+sample_sheet: null
+features_file: /Users/carolineeastwood/Desktop/Diss_project/riboviz_dependencies_packages/riboviz/data/yeast_features.tsv
+

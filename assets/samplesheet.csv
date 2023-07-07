@@ -1,3 +1,11 @@
-sample,fastq_1,fastq_2
-SAMPLE_PAIRED_END,/path/to/fastq/files/AEG588A1_S1_L002_R1_001.fastq.gz,/path/to/fastq/files/AEG588A1_S1_L002_R2_001.fastq.gz
-SAMPLE_SINGLE_END,/path/to/fastq/files/AEG588A4_S4_L003_R1_001.fastq.gz,
+,,,
+sample,fastq,library_type,replicate
+SSD1-HF_Rep1,/path/to/fastq/files/SSD1-HF_Rep1_rpf_1.fastq.gz,RiboSeq,1
+SSD1-HF_Rep2,/path/to/fastq/files/dSSD1_Rep3_rpf_1.fastq.gz,RiboSeq,2
+SSD1-HF_Rep3,/path/to/fastq/files/SSD1-HF_Rep3_rpf_1.fastq.gz,RiboSeq,3
+CDS-side_Rep1,/path/to/fastq/files/CDS-side_Rep1_rpf_1.fastq.gz,RiboSeq,1
+CDS-side_Rep2,/path/to/fastq/files/CDS-side_Rep2_rpf_1.fastq.gz,RiboSeq,2
+CDS-side_Rep3,/path/to/fastq/files/CDS-side_Rep3_rpf_1.fastq.gz,RiboSeq,3
+dSSD1_Rep1,/path/to/fastq/files/dSSD1_Rep1_rpf_1.fastq.gz,RiboSeq,1
+dSSD1_Rep2,/path/to/fastq/files/dSSD1_Rep2_rpf_1_upload2.fastq.gz,RiboSeq,2
+dSSD1_Rep3,/path/to/fastq/files/SSD1-HF_Rep2_rpf_1.fastq.gz,RiboSeq,3

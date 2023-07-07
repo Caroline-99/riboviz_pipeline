@@ -4,7 +4,7 @@
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-include { paramsSummaryLog; paramsSummaryMap } from 'plugin/nf-validation'
+include { paramsSummaryLog; paramsSummaryMap; fromSamplesheet } from 'plugin/nf-validation'
 
 def logo = NfcoreTemplate.logo(workflow, params.monochrome_logs)
 def citation = '\n' + WorkflowMain.citation(workflow) + '\n'
@@ -35,7 +35,7 @@ ch_multiqc_custom_methods_description = params.multiqc_methods_description ? fil
 //
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
 //
-include { INPUT_CHECK } from '../subworkflows/local/input_check'
+
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -47,6 +47,7 @@ include { INPUT_CHECK } from '../subworkflows/local/input_check'
 // MODULE: Installed directly from nf-core/modules
 //
 include { FASTQC                      } from '../modules/nf-core/fastqc/main'
+include { CUTADAPT                    } from '../modules/nf-core/cutadapt/main'
 include { MULTIQC                     } from '../modules/nf-core/multiqc/main'
 include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/custom/dumpsoftwareversions/main'
 
@@ -64,15 +65,12 @@ workflow NEWPIPELINE {
     ch_versions = Channel.empty()
 
     //
-    // SUBWORKFLOW: Read in samplesheet, validate and stage input files
-    //
-    INPUT_CHECK (
-        file(params.input)
-    )
-    ch_versions = ch_versions.mix(INPUT_CHECK.out.versions)
-    // TODO: OPTIONAL, you can use nf-validation plugin to create an input channel from the samplesheet with Channel.fromSamplesheet("input")
-    // See the documentation https://nextflow-io.github.io/nf-validation/samplesheets/fromSamplesheet/
-    // ! There is currently no tooling to help you write a sample sheet schema
+    // Create input channel from input file provided through params.input
+
+    ch_fastq = Channel
+    .fromSamplesheet("input")
+    .set { ch_fastq }
+
 
     //
     // MODULE: Run FastQC
@@ -85,6 +83,14 @@ workflow NEWPIPELINE {
     CUSTOM_DUMPSOFTWAREVERSIONS (
         ch_versions.unique().collectFile(name: 'collated_versions.yml')
     )
+
+// MODULE: Run cutadapt
+    //
+    CUTADAPT (
+        INPUT_CHECK.out.reads
+    )
+    ch_versions = ch_versions.mix(CUTADAPT.out.versions.first())
+
 
     //
     // MODULE: MultiQC
