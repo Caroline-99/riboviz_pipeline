@@ -83,9 +83,8 @@ workflow NEWPIPELINE {
     // MODULE: Run cutadapt
     //
     CUTADAPT (
-        INPUT_CHECK.out.reads
+        ch_fastq
     )
-    ch_versions = ch_versions.mix(CUTADAPT.out.versions.first())
 
 
     //
