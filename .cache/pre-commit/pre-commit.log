@@ -29,10 +29,10 @@ pre_commit.util.CalledProcessError: command: ('/usr/bin/git', 'rev-parse', '--sh
 return code: 128
 stdout: (none)
 stderr:
-    fatal: detected dubious ownership in repository at '/Users/carolineeastwood/riboviz-newpipeline'
+    fatal: detected dubious ownership in repository at '/Users/carolineeastwood/Desktop/Diss_project/riboviz_pipeline'
     To add an exception for this directory, call:
     
-    	git config --global --add safe.directory /Users/carolineeastwood/riboviz-newpipeline
+    	git config --global --add safe.directory /Users/carolineeastwood/Desktop/Diss_project/riboviz_pipeline
 
 During handling of the above exception, another exception occurred:
 

@@ -9,7 +9,7 @@ process CUTADAPT {
         'biocontainers/cutadapt:3.4--py39h38f01e4_1' }"
 
     input:
-    tuple val(meta), path(sample_fq)
+    tuple val(meta), path(reads) from ch_fastq
 
     output:
     tuple val(meta), path('*.fq'), emit: reads
@@ -25,7 +25,7 @@ process CUTADAPT {
     cutadapt \\
         --cores $task.cpus --trim-n -O 1 -m 5 -a ${params.adapters} \\
         $trimmed \\
-        ${sample_fq} \\
+        ${reads} \\
         > ${prefix}.cutadapt.log
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

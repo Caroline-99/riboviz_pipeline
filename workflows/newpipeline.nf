@@ -75,9 +75,9 @@ workflow NEWPIPELINE {
     //
     // MODULE: Run FastQC
     //
-    FASTQC (
-        ch_fastq
-    )
+    //FASTQC (
+        //ch_fastq
+    //)
     
 
     // MODULE: Run cutadapt
